@@ -137,7 +137,7 @@ async function fetchData1() {
         color1 = "red";
         fontColor1 = "white";
       } else {
-        color1 = "#ebec90"; // Set to white if no change
+        color1 = "#f5e0a8"; // Set to white if no change
         fontColor1 = "black";
       }
 
@@ -150,7 +150,7 @@ async function fetchData1() {
         color2 = "red";
         fontColor2 = "white";
       } else {
-        color2 = "#ebec90"; // Set to white if no change
+        color2 = "#f5e0a8"; // Set to white if no change
         fontColor2 = "black";
       }
 
@@ -163,7 +163,7 @@ async function fetchData1() {
         color3 = "red";
         fontColor3 = "white";
       } else {
-        color3 = "#ebec90"; // Set to white if no change
+        color3 = "#f5e0a8"; // Set to white if no change
         fontColor3 = "black";
       }
 
@@ -176,7 +176,7 @@ async function fetchData1() {
         color4 = "red";
         fontColor4 = "white";
       } else {
-        color4 = "#ebec90"; // Set to white if no change
+        color4 = "#f5e0a8"; // Set to white if no change
         fontColor4 = "black";
       }
 
