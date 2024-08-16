@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="icon" type="image/png" href="./logo 01.png">
+  <title>
+    BEAUTY WORLD
+  </title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.js"></script>
+  <!-- Link Bootstrap CSS -->
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <!--     Fonts and icons     -->
+  <script src="https://kit.fontawesome.com/0e1fa7c1a3.js" crossorigin="anonymous"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+    body {
+      margin: 0;
+      padding: 30px 50px;
+      font-family: "arial", heletica, sans-serif;
+      font-size: 24px;
+      background-color: #33503c;
+      background-repeat: no-repeat;
+      background-size: cover;
+      -webkit-animation: 20s linear 0s normal none infinite animate;
+      -moz-animation: 20s linear 0s normal none infinite animate;
+      -ms-animation: 20s linear 0s normal none infinite animate;
+      -o-animation: 20s linear 0s normal none infinite animate;
+      animation: 20s linear 0s normal none infinite animate;
+      color: black;
+      height: 100vh;
+    }
+
+
+    .rate-card {
+      display: none;
+    }
+
+    table {
+      width: 100%;
+    }
+
+    table thead {
+      border-radius: 10px;
+    }
+
+    table thead tr {
+      background-color: #3e8e57;
+    }
+
+    table thead tr th:first-child {
+      border-top-left-radius: 15px;
+      border-bottom-left-radius: 15px;
+    }
+
+    table thead tr th:last-child {
+      border-top-right-radius: 15px;
+      border-bottom-right-radius: 15px;
+    }
+
+    table thead tr th {
+      color: #fff;
+      padding: 7px;
+      text-align: center;
+    }
+
+    table tbody tr {
+      background-color: #ebec90;
+    }
+
+    table tbody tr td {
+      color: #33503c;
+      font-weight: 600;
+      padding: 8px;
+    }
+
+    table tbody tr:nth-child(even) {
+      background-color: transparent;
+    }
+
+    table tbody tr td:first-child {
+      border-top-left-radius: 15px;
+      border-bottom-left-radius: 15px;
+    }
+
+    table tbody tr td:last-child {
+      border-top-right-radius: 15px;
+      border-bottom-right-radius: 15px;
+    }
+
+    .row2 {
+      display: flex;
+      flex-direction: row;
+      margin-top: 50px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .news-card {
+      display: flex;
+      flex-direction: row;
+      opacity: 100%;
+      height: 50px;
+      width: 100%;
+      border-radius: 15px;
+      background-color: #ebec90;
+      padding: 0;
+    }
+
+    .news-card .news-label {
+      display: flex;
+      flex-direction: row;
+      width: 300px;
+      padding: 5px;
+      flex-direction: column;
+      background-color: #3e8e57;
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+      align-items: center;
+      opacity: 100%;
+      color: #fff;
+    }
+
+    .news-card .news-label h3 {
+      font-size: 1.4vw;
+      font-weight: 600;
+    }
+
+    .news-card .news-label p {
+      margin-top: -15px;
+      font-size: 1.1vw;
+      font-weight: 600;
+    }
+
+    .news-card .news {
+      display: flex;
+      padding: 5px;
+      font-size: 1.8vw;
+      color: #25364a;
+      font-weight: 400;
+    }
+
+    .carousel-container img {
+      width: 100%;
+      height: 130px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+      margin-left: 0px;
+      object-fit: fill;
+    }
+
+    .market-data {
+      width: 100%;
+      /* Adjust as needed */
+      margin-top: 20px;
+    }
+
+    .market-data-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+
+    .market-data-label {
+      font-size: 18px;
+      font-weight: bold;
+      color: #ebec90;
+    }
+
+    .market-data-value {
+      font-size: 18px;
+      font-weight: bold;
+      color: #ebec90;
+    }
+
+    .market-data-bar {
+      display: flex;
+      height: 8px;
+      border-radius: 5px;
+      overflow: hidden;
+      background-color: #E0E0E0;
+      /* Background color for the bar */
+      margin-bottom: 5px;
+    }
+
+    .buyers-bar {
+      background-color: #008080;
+      /* Color for Buyers */
+      height: 100%;
+    }
+
+    .sellers-bar {
+      background-color: #C00000;
+      /* Color for Sellers */
+      height: 100%;
+    }
+
+    .market-data-percentage {
+      text-align: center;
+      margin-top: 0px;
+    }
+
+    .market-data-change {
+      font-weight: bold;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="col-lg-12 mb-3" style="display: flex; flex-direction: row; justify-content: space-between;">
+
+    <!-- Column -->
+    <div class="col-lg-6">
+
+      <!-- Carousel -->
+      <div class="carousel-container">
+        <img id="carouselImage" src="./assets/images/image1.jpg" alt="">
+      </div>
+
+      <!-- Table -->
+      <table>
+        <thead>
+          <tr>
+            <th colspan="2">METALS</th>
+            <th>WEIGHT</th>
+            <th>SELL(AED)</th>
+          </tr>
+          <tr style="height: 10px;background-color: transparent;"></tr>
+        </thead>
+        <tbody id="tableBodyTV">
+        </tbody>
+      </table>
+
+
+
+      <div class="market-data">
+        <div class="market-data-row">
+          <span class="market-data-label">BUYERS</span>
+          <div class="market-data-percentage">
+            <span class="market-data-change" style="color: #3e8e57; font-size: large;">0.080%</span>
+          </div>
+          <span class="market-data-value">SELLER</span>
+        </div>
+        <div class="market-data-bar">
+          <div class="buyers-bar" style="width: 81%;"></div>
+          <div class="sellers-bar" style="width: 19%;"></div>
+        </div>
+        <div class="market-data-row">
+          <span class="market-data-label">81%</span>
+          <span class="market-data-value">19%</span>
+        </div>
+      </div>
+
+
+
+    </div>
+
+    <!-- Column -->
+    <div style="width: 100%;">
+      <!-- Logo Date Time -->
+      <div>
+        <div style="display: flex; justify-content: center; align-items: center;">
+          <img class="logo mr-2" src="./Beauty-Logo.png" alt=""
+            style="width: 350px; margin-top: 0px; margin-left: -20px;">
+        </div>
+
+        <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+          <div style="display: flex; flex-direction: row;">
+            <span id="hour" style="color: #ebec90; font-size: 45px; font-weight: 600;"></span>
+            <span style="color: #ebec90; font-size: 45px; font-weight: 600; margin: 0px 3px;">:</span>
+            <span id="minute" style="color: #ebec90; font-size: 45px; font-weight: 600;"></span>
+            <span id="meridian" style="color: #ebec90; font-size: 45px; font-weight: 600; margin-left: 7px;"></span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+            <span id="day" style="color: #ebec90; font-size: 35px; font-weight: 600; margin: 0px 5px;"></span>
+            <div>
+              <span id="date" style="color: #ebec90; font-size: 22px; font-weight: 600; margin: 0px 5px;"></span>
+              <span id="month" style="color: #ebec90; font-size: 22px; font-weight: 600; margin: 0px 5px;"></span>
+              <span id="year" style="color: #ebec90; font-size: 22px; font-weight: 600; margin: 0px 5px;"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Spot Rate -->
+      <div class="mt-3" style="display: flex; flex-direction: column;">
+
+        <div class="mb-3"
+          style="display: flex; flex-direction: row; border-radius: 13px; background-color: #3e8e57; height: 50px;">
+          <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; width: 350px;">
+            <span style="color: #fff; font-size: 25px; font-weight: 600;">SPOT RATE</span>
+          </div>
+          <div
+            style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: 100%; padding: 0px 80px 0px 50px;">
+            <!-- BID Section -->
+            <div style="display: flex; align-items: center;">
+              <span
+                style="display: flex; justify-content: center; align-items: center; background-color: white; color: #3e8e57; padding: 5px; border-radius: 20%; height: 30px; width: 30px;">
+                <i class="fas fa-dollar-sign"></i> <!-- Replace with your icon if different -->
+              </span>
+              <span style="margin-left: 8px; color: #fff; font-size: 25px; font-weight: 600;">BID</span>
+              <!-- Adjust the margin as needed -->
+            </div>
+
+            <!-- ASK Section -->
+            <div style="display: flex; align-items: center;">
+              <span
+                style="display: flex; justify-content: center; align-items: center; background-color: white; color: #3e8e57; padding: 5px; border-radius: 20%; height: 30px; width: 30px;">
+                <i class="fas fa-dollar-sign"></i> <!-- Replace with your icon if different -->
+              </span>
+              <span style="margin-left: 8px; color: #fff; font-size: 25px; font-weight: 600;">ASK</span>
+              <!-- Adjust the margin as needed -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Gold -->
+        <div style="display: flex; flex-direction: row; justify-content: center; align-items: center;">
+          <div
+            style="display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #3e8e57; height: 160px; width: 280px; border-radius: 15px;">
+            <span style="color: #fff; font-size: 40px; font-weight: 600;">GOLD</span>
+            <img src="./gold bar.png" alt="" style="width: 100px;">
+          </div>
+          <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: 100%; 
+            background-color: #ebec90; height: 130px; border-top-right-radius: 15px; border-bottom-right-radius: 15px;
+            padding: 0px 50px;">
+            <div>
+              <div id="goldInputLow"
+                style="font-size: 2.2vw; width: 160px; background-color: #ebec90; font-weight: 600; text-align: center; border: 2px solid #33503c; border-radius: 10px;">
+                0
+              </div>
+              <span class="badge badge-success label-low mt-1"
+                style="width: 160px; font-size:20px; background-color: red; border-radius: 10px;">LOW <span
+                  id="lowLabelGold">0</span></span>
+            </div>
+            <div>
+              <div id="goldInputHigh"
+                style="font-size: 2.2vw; width: 160px; background-color: #ebec90; font-weight: 600; text-align: center; border: 2px solid #33503c; border-radius: 10px;">
+                0
+              </div>
+              <span class="badge badge-success label-low mt-1"
+                style="width: 160px; font-size:20px; background-color: green; border-radius: 10px;">HIGH <span
+                  id="highLabelGold">0</span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Silver -->
+        <div class="mt-3" style="display: flex; flex-direction: row; justify-content: center; align-items: center;">
+          <div
+            style="display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #3e8e57; height: 160px; width: 280px; border-radius: 15px;">
+            <span style="color: #fff; font-size: 40px; font-weight: 500;">SILVER</span>
+            <img src="./silver bar.png" alt="" style="width: 100px;">
+          </div>
+          <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: 100%; 
+            background-color: #ebec90; height: 130px; border-top-right-radius: 15px; border-bottom-right-radius: 15px;
+            padding: 0px 50px;">
+            <div>
+              <div id="silverInputLow"
+                style="font-size: 2.2vw; width: 160px; background-color: #ebec90; font-weight: 600; text-align: center; border: 2px solid #33503c; border-radius: 10px;">
+                0
+              </div>
+              <span class="badge badge-success label-low mt-1"
+                style="width: 160px; font-size:20px; background-color: red; border-radius: 10px;">LOW <span
+                  id="lowLabelSilver">0</span></span>
+            </div>
+            <div>
+              <div id="silverInputHigh"
+                style="font-size: 2.2vw; width: 160px; background-color: #ebec90; font-weight: 600; text-align: center; border: 2px solid #33503c; border-radius: 10px;">
+                0
+              </div>
+              <span class="badge badge-success label-low mt-1"
+                style="width: 160px; font-size:20px; background-color: green; border-radius: 10px;">HIGH <span
+                  id="highLabelSilver">0</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+  </div>
+
+
+  <div style="margin-top: -10px; margin-left: 25px; width: 97.5%;">
+    <div class="news-card">
+      <div class="news-label">
+        <span style="font-weight: 600;">NEWS</span>
+      </div>
+      <div class="news">
+        <!-- Display News Here -->
+        <marquee behavior="scrolling" direction="left" id="displayNews">-</marquee>
+      </div>
+    </div>
+  </div>
+
+  <div class="rate-card">
+    <div class="col-lg-3">
+      <div class="card">
+        <div class="card-body">
+          <div class="gold-card">
+            <img src="./assets/img/gold.png" alt="">
+            <h3>Gold</h3>
+          </div>
+          <p id="goldRate"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3">
+      <div class="card">
+        <div class="card-body">
+          <div class="silver-card">
+            <img src="./assets/img/silver.png" alt="">
+            <h3>Silver</h3>
+          </div>
+          <p id="silverRate"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+  <!-- Link Bootstrap JS and Popper.js -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <script>
+    function startTime() {
+      function updateTime() {
+        var today = new Date();
+        var hr = today.getHours();
+        var min = today.getMinutes();
+        var ap = (hr < 12) ? "<span>AM</span>" : "<span>PM</span>";
+        hr = (hr == 0) ? 12 : hr;
+        hr = (hr > 12) ? hr - 12 : hr;
+        hr = checkTime(hr);
+        min = checkTime(min);
+        // document.getElementById("clock").innerHTML = hr + ":" + min + " " + ap;
+
+        document.getElementById('hour').innerHTML = hr;
+        document.getElementById('minute').innerHTML = min;
+        document.getElementById('meridian').innerHTML = ap;
+
+        var months = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
+        var days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+        var curWeekDay = days[today.getDay()];
+        var curDay = today.getDate();
+        var curMonth = months[today.getMonth()];
+        var curYear = today.getFullYear();
+        var date = curDay;
+        var day = curWeekDay;
+        console.log(curDay, curMonth, curWeekDay, curYear);
+        document.getElementById("month").innerHTML = curMonth;
+        // document.getElementById("currentDay").innerHTML = curDay;
+        document.getElementById("year").innerHTML = curYear;
+        document.getElementById("date").innerHTML = date;
+        document.getElementById("day").innerHTML = day;
+      }
+
+      function checkTime(i) {
+        return (i < 10) ? "0" + i : i;
+      }
+
+      // Call updateTime immediately to set the initial values
+      updateTime();
+
+      // Update every second using setInterval
+      var intervalId = setInterval(updateTime, 1000);
+
+      // Optional: If you want to stop the interval after a specific duration (e.g., 30 minutes)
+      // Uncomment the following lines:
+      // setTimeout(function() {
+      //   clearInterval(intervalId);
+      // }, 30 * 60 * 1000);
+    }
+
+    startTime();
+  </script>
+  <script>
+    let currentIndex = 0;
+    const images = ['./assets/images/image1.jpg', './assets/images/image2.jpg', './assets/images/image3.jpeg']; // Add your image URLs here
+    // assets\images\image1.jpg
+    function showImage() {
+      const carouselImage = document.getElementById("carouselImage");
+      carouselImage.src = images[currentIndex];
+      currentIndex = (currentIndex + 1) % images.length;
+    }
+
+    // Show the first image
+    showImage();
+
+    // Automatic carousel
+    setInterval(showImage, 3000); // Change image every 3 seconds
+  </script>
+  <script>
+    // Check if the screen width is below a certain threshold (e.g., 1000 pixels)
+    if (window.innerWidth < 1024) {
+      // Redirect users from mobile and tablet devices to a different page or show an error message
+      window.location.href = '../../../pages/error.html'; // Redirect to a mobile error page
+    }
+  </script>
+  <script src="https://unpkg.com/metaapi.cloud-sdk"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database.js"></script>
+  <script type="module" defer src="./assets/js/core/aurifyview2.js"></script>
+  <script type="module" src="./config/db.js"></script>
+  <script type="module" src="./assets/js/core/spotrateDB.js"></script>
+  <script type="module" defer src="./assets/js/core/displayNews.js"></script>
+
+</body>
+
+</html>
