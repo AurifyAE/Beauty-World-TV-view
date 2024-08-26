@@ -304,11 +304,10 @@ async function readData() {
   }
 }
 
-
 async function showTable() {
   try {
     const tableData = await readData();
-    const tableBody = document.getElementById('tableBodyTV');
+    const tableBody = document.getElementById("tableBodyTV");
 
     // Loop through the tableData
     for (const data of tableData) {
@@ -322,65 +321,160 @@ async function showTable() {
       const sellPremiumInputAED = data.data.sellPremiumAED;
       const buyPremiumInputAED = data.data.buyPremiumAED;
 
-      let metal, purity;
-      if (metalInput === 'Gold') {
-        metal = 'GOLD'
-        purity = purityInput
-      } else if (metalInput === 'Gold TEN TOLA') {
-        metal = 'GOLD'
-        purity = purityInput
+      let metal;
+      let purity;
+      if (weightInput === "KG" || weightInput === "TTB" || weightInput === "GM") {
+        metal = "GOLD";
+        purity = purityInput;
+      } else {
+        metal = metalInput;
+        purity = purityInput;
       }
 
       // Create a new table row for data
       const newRow = document.createElement("tr");
       newRow.innerHTML = `
-              <td colspan="2" style="text-align: center;">${metal} <span style="font-size: 25px;">${purity}</span></td>
+              <td style="text-align: right;">${metal}</td>
+              <td style="text-align: left; font-size:12px; font-weight: 600;">${purity}</td>
               <td style="text-align: center;">${unitInput} ${weightInput}</td>
               <td id="sellAED" style="text-align: center;">0</td>
           `;
-      // Append the new row to the table body
       tableBody.appendChild(newRow);
 
       // Create an empty row (if not the last row)
       if (data !== tableData[tableData.length - 1]) {
-        tableBody.insertAdjacentHTML('beforeend', '<tr><td colspan="5" style="height: 7px;"></td></tr>');
+        tableBody.insertAdjacentHTML(
+          "beforeend",
+          '<tr><td colspan="5" style="height: 0px;"></td></tr>'
+        );
       }
 
       displaySpreadValues();
 
       setInterval(async () => {
-        let weight = weightInput;
         let unitMultiplier = 1;
 
         // Adjust unit multiplier based on the selected unit
-        if (weight === "GM") {
-          unitMultiplier = 1;
-        } else if (weight === "KG") {
-          unitMultiplier = 1000;
-        } else if (weight === "TTB") {
-          unitMultiplier = 116.6400;
-        } else if (weight === "TOLA") {
-          unitMultiplier = 11.664;
-        } else if (weight === "OZ") {
-          unitMultiplier = 31.1034768;
+        switch (weightInput) {
+          case "GM":
+            unitMultiplier = 1;
+            break;
+          case "KG":
+            unitMultiplier = 1000;
+            break;
+          case "TTB":
+            unitMultiplier = 116.64;
+            break;
+          case "TOLA":
+            unitMultiplier = 11.664;
+            break;
+          case "OZ":
+            unitMultiplier = 31.1034768;
+            break;
         }
 
-        let sellPremium = sellPremiumInputAED || 0;
-        // let buyPremium = buyPremiumInputAED || 0;
+        let sellPremium = parseFloat(sellPremiumInputAED) || 0;
+        let buyPremium = parseFloat(buyPremiumInputAED) || 0;
 
-        const sellAED = parseFloat(
-          (
-            goldAskingPrice *
-            unitInput *
-            unitMultiplier *
-            (purityInput / Math.pow(10, purityInput.length)) +
-            parseFloat(sellPremium)
-          ).toFixed(2)
-        );
-        newRow.querySelector("#sellAED").innerText = sellAED ? sellAED : 0
-      }, 500)
+        let sellAEDValue = goldAskingPrice * unitInput * unitMultiplier * (purityInput / Math.pow(10, purityInput.length)) + sellPremium;
+        let buyAEDValue = goldBiddingPrice * unitInput * unitMultiplier * (purityInput / Math.pow(10, purityInput.length)) + buyPremium;
+
+        // Check if unit is 100 and weight is GM to round to integer
+        if (weightInput === 'GM' && unitInput === '100' || weightInput === 'TTB' && unitInput === '1') {
+          sellAEDValue = Math.round(sellAEDValue);
+          buyAEDValue = Math.round(buyAEDValue);
+        } else {
+          sellAEDValue = sellAEDValue.toFixed(2);  // Keep 2 decimal places for other cases
+          buyAEDValue = buyAEDValue.toFixed(2);
+        }
+
+        newRow.querySelector("#sellAED").innerText = sellAEDValue;
+        newRow.querySelector("#buyAED").innerText = buyAEDValue;
+      }, 500);
     }
   } catch (error) {
-    console.error('Error reading data:', error);
+    console.error("Error reading data:", error);
   }
 }
+
+
+
+// async function showTable() {
+//   try {
+//     const tableData = await readData();
+//     const tableBody = document.getElementById('tableBodyTV');
+
+//     // Loop through the tableData
+//     for (const data of tableData) {
+//       // Assign values from data to variables
+//       const metalInput = data.data.metal;
+//       const purityInput = data.data.purity;
+//       const unitInput = data.data.unit;
+//       const weightInput = data.data.weight;
+//       const sellAEDInput = data.data.sellAED;
+//       const buyAEDInput = data.data.buyAED;
+//       const sellPremiumInputAED = data.data.sellPremiumAED;
+//       const buyPremiumInputAED = data.data.buyPremiumAED;
+
+//       let metal, purity;
+//       if (metalInput === 'Gold') {
+//         metal = 'GOLD'
+//         purity = purityInput
+//       } else if (metalInput === 'Gold TEN TOLA') {
+//         metal = 'GOLD'
+//         purity = purityInput
+//       }
+
+//       // Create a new table row for data
+//       const newRow = document.createElement("tr");
+//       newRow.innerHTML = `
+//               <td colspan="2" style="text-align: center;">${metal} <span style="font-size: 25px;">${purity}</span></td>
+//               <td style="text-align: center;">${unitInput} ${weightInput}</td>
+//               <td id="sellAED" style="text-align: center;">0</td>
+//           `;
+//       // Append the new row to the table body
+//       tableBody.appendChild(newRow);
+
+//       // Create an empty row (if not the last row)
+//       if (data !== tableData[tableData.length - 1]) {
+//         tableBody.insertAdjacentHTML('beforeend', '<tr><td colspan="5" style="height: 7px;"></td></tr>');
+//       }
+
+//       displaySpreadValues();
+
+//       setInterval(async () => {
+//         let weight = weightInput;
+//         let unitMultiplier = 1;
+
+//         // Adjust unit multiplier based on the selected unit
+//         if (weight === "GM") {
+//           unitMultiplier = 1;
+//         } else if (weight === "KG") {
+//           unitMultiplier = 1000;
+//         } else if (weight === "TTB") {
+//           unitMultiplier = 116.6400;
+//         } else if (weight === "TOLA") {
+//           unitMultiplier = 11.664;
+//         } else if (weight === "OZ") {
+//           unitMultiplier = 31.1034768;
+//         }
+
+//         let sellPremium = sellPremiumInputAED || 0;
+//         // let buyPremium = buyPremiumInputAED || 0;
+
+//         const sellAED = parseFloat(
+//           (
+//             goldAskingPrice *
+//             unitInput *
+//             unitMultiplier *
+//             (purityInput / Math.pow(10, purityInput.length)) +
+//             parseFloat(sellPremium)
+//           ).toFixed(2)
+//         );
+//         newRow.querySelector("#sellAED").innerText = sellAED ? sellAED : 0
+//       }, 500)
+//     }
+//   } catch (error) {
+//     console.error('Error reading data:', error);
+//   }
+// }
